@@ -58,8 +58,8 @@ toggle_maximize(Display *display, Window window)
 	Atom max_h = XInternAtom(display, "_NET_WM_STATE_MAXIMIZED_HORZ", False);
 	Atom max_v = XInternAtom(display, "_NET_WM_STATE_MAXIMIZED_VERT", False);
     
-	// NOTE(jake): according to the spec if "_NET_WM_STATE" isn't found,
-	//			   then everything associated with it won't be available either
+	/* NOTE(jake): according to the spec if "_NET_WM_STATE" isn't found,
+	               then everything associated with it won't be available either */
 	if(wm_state == None)
 		return 0;
     
@@ -87,7 +87,7 @@ resize_window_buffer(Display *display, XVisualInfo *visual_info, WindowOffscreen
 	buffer->pitch = buffer->width * buffer->bytes_per_pixel;
 	
 	if(buffer->ximage) {
-		// NOTE(jake): this also frees window_offscreen_buffer.memory
+		/* NOTE(jake): this also frees window_offscreen_buffer.memory */
 		XDestroyImage(buffer->ximage);
 	}
 	
@@ -134,13 +134,13 @@ main(int argc, char **argv)
 	}
     
 	XSetWindowAttributes window_attributes = {0};
-	// NOTE(jake): when set to ForgetGravity X discards the window state every resize, causing a flicker.
-	//             also have to add CWBitGravity to the attribute mask.
+	/* NOTE(jake): when set to ForgetGravity X discards the window state every resize, causing a flicker.
+	               also have to add CWBitGravity to the attribute mask. */
 	window_attributes.bit_gravity = StaticGravity;
 	window_attributes.background_pixel = 0;
 	window_attributes.colormap = XCreateColormap(display, root, visual_info.visual, AllocNone);
 	window_attributes.event_mask = StructureNotifyMask | KeyPressMask | KeyReleaseMask;
-	// NOTE(jake): this tells X what we defined in window_attributes when passed to XCreateWindow. super cool api!!
+	/* NOTE(jake): this tells X what we defined in window_attributes when passed to XCreateWindow. super cool api!! */
 	u32 attribute_mask = CWBackPixel | CWColormap | CWEventMask | CWBitGravity;
     
 	i32 window_width = 1280;
@@ -152,12 +152,12 @@ main(int argc, char **argv)
 								  visual_info.depth, InputOutput,
 								  visual_info.visual, attribute_mask, &window_attributes);
     
-	// NOTE(jake): sets minimum window size to 400 x 300
+	/* NOTE(jake): sets minimum window size to 400 x 300 */
 	set_size_hint(display, window, 400, 300, 0, 0);
 	XStoreName(display, window, "Hello, World!");
     
 	XMapWindow(display, window);
-	// toggle_maximize(display, window); // NOTE(jake): call to maximize the window on startup
+	// toggle_maximize(display, window); /* NOTE(jake): call to maximize the window on startup */
 	XFlush(display);
     
 	WindowOffscreenBuffer window_offscreen_buffer = {0};
@@ -190,8 +190,8 @@ main(int argc, char **argv)
 			case DestroyNotify: {
 				XDestroyWindowEvent *e = (XDestroyWindowEvent *) &ev;
 					
-				// NOTE(jake): this only is needed if opening multiple windows,
-				// can be safely removed if you plan to only manage one window.
+				/* NOTE(jake): this only is needed if opening multiple windows,
+				   can be safely removed if you plan to only manage one window. */
 				if(e->window == window) {
 					running = 0;
 				}
@@ -216,7 +216,7 @@ main(int argc, char **argv)
 			case KeyPress: {
 				XKeyPressedEvent *e = (XKeyPressedEvent *) &ev;
                     
-				// NOTE(jake): find keycode macros in: /usr/include/X11/keysymdef.h
+				/* NOTE(jake): find keycode macros in: /usr/include/X11/keysymdef.h */
 				if(e->keycode == XKeysymToKeycode(display, XK_space)) {
 					printf("You pressed the space\n");
 				}
